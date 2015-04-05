@@ -16,14 +16,15 @@ class FileManager(object):
         and returns a dictionary of keys.
         """
         try:
-            if self.filepath != filepath:
-                self.filepath = filepath
-            self.file = shelve.open(self.filepath)
-            return self.file.keys()
+            shelve.open(filepath)
+            self.filepath = filepath
+            try:
+                self.file = shelve.open(self.filepath)
+                return self.file.keys()
+            except:
+                print("An error occured, please try again.")
         except IOError:
-            print("Cannot find file at " + filepath)
-        except:
-            print("An error occured, please try again.")
+            raise
 
     def saveGame(self, state, fileName):
         """
