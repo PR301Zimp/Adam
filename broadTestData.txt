@@ -1,0 +1,17 @@
+"""
+>>> import Game
+>>> import os
+>>> game = Game.startGameWithData()
+>>> fp = "C:\\Users\\AdamMorrison\\Desktop\\The real Assignment 1\\BCPR301 Assignment 1\\docTest"
+>>> game.fm.delShelve(fp)
+>>> game.loadFile(fp)
+>>> print(str(list(game.saves)))
+[]
+>>> game.time = "Save/load test."
+>>> game.save("test1")
+>>> game.time = None
+>>> game.load("test1")
+>>> print(game.time)
+Save/load test.
+
+"""
