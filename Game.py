@@ -4,14 +4,16 @@ from Display import Display
 from CMD import CMD
 from Item import Item
 from ActionCard import ActionCard
+from Display import Display
 import Tile
 import random
+
 
 class Game(object):
     def __init__(self):
         self.allMyIndoorTiles = {}
         self.allMyOutdoorTiles = {}
-        self.time = 9 # Need to change to correct time
+        self.time = 9  # Need to change to correct time
         self.actionCards = []
         self.actionCardsCurrent = []
         self.map = []
@@ -19,6 +21,8 @@ class Game(object):
         self.allMyItems = {}
         self.fm = FileManager()
         self.player = Player()
+        self.cmd = CMD(self)
+        self.display = Display()
         self.saves = None
         # End New
 
@@ -28,7 +32,7 @@ class Game(object):
     # End New
 
     def save(self, fileName):
-        state = {} # What goes into state
+        state = {}  # What goes into state
         state["indoor"] = self.allMyIndoorTiles
         state["outdoor"] = self.allMyOutdoorTiles
         state["time"] = self.time
@@ -39,7 +43,7 @@ class Game(object):
         self.fm.saveGame(state, fileName)
 
     def load(self, fileName):
-        state = self.fm.loadGame(fileName) # What goes into state
+        state = self.fm.loadGame(fileName)  # What goes into state
         # Assign values in state to __init__ variables
         self.allMyIndoorTiles = state["indoor"]
         self.allMyOutdoorTiles = state["outdoor"]
@@ -54,8 +58,8 @@ class Game(object):
             self.time += 1
             self.shuffleActionCards()
         intRandom = random.randrange(0, len(self.actionCardsCurrent))
-        card = self.actionCardsCurrent[rnd]
-        self.actionCardsCurrent.remove(rnd)
+        card = self.actionCardsCurrent[intRandom]
+##        self.actionCardsCurrent.remove(intRandom)
         return card
 
     def addCard(self, actionCard):
@@ -110,11 +114,29 @@ class Game(object):
         for i in range(2):
             del self.actionCardsCurrent[random.randrange(0, 8 - i)]
 
-    def createTile(self, tileType, name, north = False, south = False, east = False, west = False, message = ""):
+    def createTile(self, tileType, name, north=False, south=False, east=False, west=False, message=""):
         if tileType == "out":
-            self.allMyOutdoorTiles[name] = Tile.OutdoorTile(name, north, south, east, west, message)
+            tile = Tile.OutdoorTile(name, north, south, east, west, message)
+            self.allMyOutdoorTiles[name] = tile
         elif tileType == "in":
-            self.allMyIndoorTiles[name] = Tile.IndoorTile(name, north, south, east, west, message)
+            tile = Tile.IndoorTile(name, north, south, east, west, message)
+            self.allMyIndoorTiles[name] = tile
+
+    def displayTile(self, tile, nthRoom="None", sthRoom="None", eastRoom="None", westRoom="None"):
+        self.display.displayMap(tile, nthRoom, sthRoom, eastRoom, westRoom)
+
+    def displayItems(self):
+        self.display.displayItems(self.player.item1, self.player.item2)
+
+    def takeTurn(self):
+        card = self.drawCard()
+        if self.time == 9:
+            msg = card.msgNine
+        elif time == 10:
+            msg = card.msgTen
+        else:
+            msg = card.msgEleven
+        self.display.displayItemCard(msg, self.time)
     # End New
 
 
@@ -165,3 +187,7 @@ def startGameWithData():
 
 if __name__ == '__main__':
     game = startGameWithData()
+    game.displayTile(game.allMyIndoorTiles["Dining Room"])
+    game.displayItems()
+    game.takeTurn()
+    # game.cmd.cmdloop()
